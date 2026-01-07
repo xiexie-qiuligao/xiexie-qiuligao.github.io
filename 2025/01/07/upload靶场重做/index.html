@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>upload靶场重做 | Hexo</title><meta name="author" content="xiexie"><meta name="copyright" content="xiexie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前端验证 可以禁用js 或者是先改后缀 然后抓包改 检查content-type 抓包改 在apache文件里面看哪些后缀会被作为php文件解析 php php3 phtml .htaccess 是Apache 服务器专属的 “分布式配置文件”（Nginx&#x2F; IIS 服务器不支持) 作用是 “局部配置”：不用修改 Apache 的主配置文件，只需把.htaccess 放在某个目录下，就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="upload靶场重做">
+<meta property="og:url" content="http://xiexie-qiuligao.github.io/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前端验证 可以禁用js 或者是先改后缀 然后抓包改 检查content-type 抓包改 在apache文件里面看哪些后缀会被作为php文件解析 php php3 phtml .htaccess 是Apache 服务器专属的 “分布式配置文件”（Nginx&#x2F; IIS 服务器不支持) 作用是 “局部配置”：不用修改 Apache 的主配置文件，只需把.htaccess 放在某个目录下，就">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiexie-qiuligao.github.io/img/1.png">
+<meta property="article:published_time" content="2025-01-07T10:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-07T10:54:12.830Z">
+<meta property="article:author" content="xiexie">
+<meta property="article:tag" content="学习task">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiexie-qiuligao.github.io/img/1.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "upload靶场重做",
+  "url": "http://xiexie-qiuligao.github.io/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/",
+  "image": "http://xiexie-qiuligao.github.io/img/1.png",
+  "datePublished": "2025-01-07T10:00:00.000Z",
+  "dateModified": "2026-01-07T10:54:12.830Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xiexie",
+      "url": "http://xiexie-qiuligao.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/1.png"><link rel="canonical" href="http://xiexie-qiuligao.github.io/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'upload靶场重做',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">upload靶场重做</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">upload靶场重做</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-07T10:00:00.000Z" title="发表于 2025-01-07 18:00:00">2025-01-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-07T10:54:12.830Z" title="更新于 2026-01-07 18:54:12">2026-01-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;It has been&quot;,&quot;messageNext&quot;:&quot;days since the last update, the content of the article may be outdated.&quot;,&quot;postUpdate&quot;:&quot;2026-01-07 18:54:12&quot;}" hidden></div><ol>
+<li>前端验证 可以禁用js 或者是先改后缀 然后抓包改</li>
+<li>检查content-type 抓包改</li>
+<li>在apache文件里面看哪些后缀会被作为php文件解析 php php3 phtml</li>
+<li>.htaccess 是Apache 服务器专属的 “分布式配置文件”（Nginx&#x2F; IIS 服务器不支持) 作用是 “局部配置”：不用修改 Apache 的主配置文件，只需把.htaccess 放在某个目录下，就能对这个目录及所有子目录生效；修改后不用重启 Apache 服务器，保存就生效<br>那么这里的攻击就是先上传恶意的.htaccess 文件修改目录解析规则，再上传伪装成普通文件的恶意脚本，让服务器把这些 “伪装文件” 当作 PHP 等脚本解析执行。前提是上传目录的 Apache 配置中，AllowOverride被设为All（允许.htaccess 覆盖解析规则，默认部分服务器会开启）那么直接加上解析规则</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddType application/x-httpd-php .jpg .png</span><br></pre></td></tr></table></figure>
+<p>之后传个马<br>5. .user.ini PHP（CGI&#x2F;FastCGI 模式）的目录级配置文件 PHP 解释器（PHP-FPM）是独立于 Web 服务器的进程，它会按 “目录” 维度扫描配置文件（比如.user.ini），实现 “不同目录用不同配置”；也就是说这个题只能在这个情况下才有作用 但是所有服务器都支持 与.htaccess不一样<br>关键配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=文件名：每个 PHP 文件执行前，自动包含（引入）指定文件；</span><br><span class="line">auto_append_file=文件名：每个 PHP 文件执行后，自动包含指定文件。</span><br></pre></td></tr></table></figure>
+<p>这里假设我传上去的是1.jpg 然后访问readme.php<br>服务端把1.jpg 里的内容读出来，跟 readme.php 的代码合并在一起，再执行整个合并后的代码。<br>6. 大小写绕过 Web 服务器默认不区分文件后缀的大小写，是解析规则导致的<br>7. 尾部加空格 Windows 自动截断空格，Linux 下服务器解析时忽略末尾空白字符；<br>8. 尾部加点 Windows NTFS 文件系统专属的文件名解析特性导致的（Linux 系统无此问题）说到NTFS 它是 Windows 管理硬盘文件的 “规则集” —— 规定了文件如何存储、命名、权限控制、数据安全等核心逻辑 包括下面的支持 备用数据流（ADS）::DATA 绕过<br>9. 在php文件附加数据流不会验证后缀 Windows 解析文件名时，会 自动忽略 ::DATA 及其后面的内容（只识别前面的文件名），所以 shell.php::DATA.jpg 会被当成 shell.php 处理 —— 这就是 ::DATA 绕过的本质。<br>10. .php. .<br>11. 双写绕过<br>12.  %00强制截断，他在url编码里面对印的是\0（空字符），可以直接被认为是结束符，不再读取后面的部分，我们看源码，首先首先，还是必须要绕过这个白名单验证，直接改后缀为这三个当中的一个就可以，最重要的是他是get储存路径里面的文件，原来的文件对应的就是upload里面的我们上传的不能被解析为php的东西，我们直接%00截断，在路径后面直接加上.php的文件，然后截断，服务器就会得到的是.php的东西，绕过。（php5.2特有漏洞·）<br>13. POST 改为00<br>14. 只检查文件头 因为有文件包含漏洞 所以没必要按着wp做 直接做个图片马也可以 换文件头也可以<br>15. getimagesize()，这个该函数是获取文件基础信息，依次是宽，高，常量（记录类型的），类型，然后下一个image_type_to_extention()，就用上面得到的常量来得到后缀 图片马<br>16. exif_imagetype()，是只获取文件类型的函数，相比于getimagetype()，虽然获取的类型更少了，但是获取的准确性和速度都更快了 图片马<br>17. 二次渲染的地方重新插入一句话木马，就不会被破坏。那么得到二次渲染后的图片，就上传，然后得到时间戳，就用文件本身的include漏洞绕过就可以。<br>18. 执行move_uploaded_file($temp_file, $upload_file)时，文件已经被上传到服务器的UPLOAD_PATH目录  之后才检查后缀是否合法，即使后缀不合法，文件也已经在服务器上存在了短暂的时间  那么在执行unlink之前 去执行木马文件 这里用的yakit 放一个能生成小马的木马 然后一直放 另一边一直访问就可以</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php file_put_contents(&#x27;../1.php&#x27;, &#x27;&lt;?php @eval($_POST[&quot;cmd&quot;]);phpinfo();?&gt;&#x27;);</span><br></pre></td></tr></table></figure>
+<ol start="19">
+<li>也是条件竞争 但是加了一点服务端本身可利用的特性 使用 Apache 的网站解析文件名时从右往左看，如果第一个后缀无法解析将会解析下一个后缀 7z 是 Apache 服务器默认不会解析的后缀名 .php.7z 然后条件竞争去访问 生成小马</li>
+<li>看黑名单，没有.ini，那么可以向第五关那样子，先自己搞一个.user.ini文件，里面auto_prepend_file&#x3D;.jpg(要求的都可以)，然后上传写的这个带有一句话木马的文件就可以。或者这上面获取后缀的方式是最后一次出现点之后的可以1.php.     （加空格绕过），得到的后缀是空的，绕过黑名单。</li>
+<li>这个检查方式有点奇妙 大概就是以.来分割 然后把储存的文件改成<code>$file[0].$file[元素个数-1]</code> 还要保证最后一个元素在白名单里面 漏洞原理就是形成一个数组的漏洞 让数组之间有一个是空的 最后指向的是它<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/10.png"></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://xiexie-qiuligao.github.io">xiexie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://xiexie-qiuligao.github.io/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/">http://xiexie-qiuligao.github.io/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://xiexie-qiuligao.github.io" target="_blank">Hexo</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0task/">学习task</a></div><div class="post-share"><div class="social-share" data-image="/img/1.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/12/24/sql%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/" title="sql靶场重做"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">sql靶场重做</div></div><div class="info-2"><div class="info-item-1">搭完了个人博客 做ivory学长下发的任务 重新做sql靶场 加上补充知识点 sql是最开始学的 刚开始学的时候就只是问ai 基本语法都不是很了解就在写 这里相当于重新开始吧 基础语法也就是最基础的技巧吧  order by ORDER BY测列数是SQL 注入中最基础的技巧   核心原理ORDER BY的语法支持两种排序方式：   按列名 &#x2F; 别名排序（如ORDER BY username）； 按结果集的列索引排序（如ORDER BY 1表示按结果集第 1 列排序，ORDER BY 2按第 2 列，以此类推）。 如果n ≤ 结果集的列数：语句执行正常（无报错）； 如果n &g...</div></div></div></a><a class="pagination-related" href="/2025/01/06/XXE/" title="XXE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">XXE</div></div><div class="info-2"><div class="info-item-1">什么是XXEXXE(XML External Entity Injection) 全称为 XML 外部实体注入 XML注入 在极客2025里面做过的 用svg标签来得到 当然太局限局限了 继续往下看 XML 文件可以通过 “外部实体”（DOCTYPE 声明中的 ENTITY）引用外部资源，但如果服务器的 XML 解析器未禁用外部实体加载，攻击者就能构造恶意 XML 内容，诱导解析器执行非法操作（比如读取服务器本地文件、访问内部网络等）。 基础知识 DTD 简单说简单说，DTD 是 XML 的 “格式说明书”：规定 XML 里能出现哪些元素、属性；定义元素的嵌套顺序、次数；统一不同 XML...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/12/24/sql%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/" title="sql靶场重做"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-24</div><div class="info-item-2">sql靶场重做</div></div><div class="info-2"><div class="info-item-1">搭完了个人博客 做ivory学长下发的任务 重新做sql靶场 加上补充知识点 sql是最开始学的 刚开始学的时候就只是问ai 基本语法都不是很了解就在写 这里相当于重新开始吧 基础语法也就是最基础的技巧吧  order by ORDER BY测列数是SQL 注入中最基础的技巧   核心原理ORDER BY的语法支持两种排序方式：   按列名 &#x2F; 别名排序（如ORDER BY username）； 按结果集的列索引排序（如ORDER BY 1表示按结果集第 1 列排序，ORDER BY 2按第 2 列，以此类推）。 如果n ≤ 结果集的列数：语句执行正常（无报错）； 如果n &g...</div></div></div></a><a class="pagination-related" href="/2025/01/05/%E5%A4%8D%E7%8E%B0CVE-2025-68664/" title="复现CVE-2025-68664"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-05</div><div class="info-item-2">复现CVE-2025-68664</div></div><div class="info-2"><div class="info-item-1">漏洞原理LangChain框架在处理LLM应用的复杂数据结构时，采用了定制的序列化机制。该机制与标准JSON序列化不同，它使用特殊的”lc”键作为内部标记，以区分普通Python字典与LangChain框架对象 lc 是 LangChain 内部标识字段 一旦load()或loads()反序列化时检测到 lc，就会 按 LangChain 对象解析 LangChain 在 dumps() &#x2F; dumpd() 序列化用户数据时  没有对用户可控字典中的 lc 字段做隔离或转义 会让LangChain 误以为这是一个合法的内部对象 版本范围langchain-core &gt;&#...</div></div></div></a><a class="pagination-related" href="/2025/01/06/XXE/" title="XXE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-06</div><div class="info-item-2">XXE</div></div><div class="info-2"><div class="info-item-1">什么是XXEXXE(XML External Entity Injection) 全称为 XML 外部实体注入 XML注入 在极客2025里面做过的 用svg标签来得到 当然太局限局限了 继续往下看 XML 文件可以通过 “外部实体”（DOCTYPE 声明中的 ENTITY）引用外部资源，但如果服务器的 XML 解析器未禁用外部实体加载，攻击者就能构造恶意 XML 内容，诱导解析器执行非法操作（比如读取服务器本地文件、访问内部网络等）。 基础知识 DTD 简单说简单说，DTD 是 XML 的 “格式说明书”：规定 XML 里能出现哪些元素、属性；定义元素的嵌套顺序、次数；统一不同 XML...</div></div></div></a><a class="pagination-related" href="/2025/12/28/xss%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E9%9D%B6%E5%9C%BA/" title="xss学习以及靶场"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-28</div><div class="info-item-2">xss学习以及靶场</div></div><div class="info-2"><div class="info-item-1"> 什么是xss  跨站脚本攻击 原理是操纵存在漏洞的网站，使其向用户返回恶意 JavaScript 代码。当恶意代码在受害者的浏览器中执行时，攻击者就能完全控制用户与应用程序的交互。  XSS概念验证  通过注入一段有效载荷来验证大多数类型的 XSS 漏洞，该有效载荷会导致您的浏览器执行一些任意 JavaScript 代码。相当于就是快速检测是否有xss漏洞 。在大多数靶场里面可以快速用函数alert() 看看会不会出现弹窗 后面alert()函数在有些无法使用了 用的是print()  XSS攻击类型  XSS攻击主要分为三种类型，分别是：  反射型 XSS，其中恶意脚本来自当前的 H...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiexie</div><div class="author-info-description">我的个人学习博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xiexie-qiuligao"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/28/xss%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E9%9D%B6%E5%9C%BA/" title="xss学习以及靶场">xss学习以及靶场</a><time datetime="2025-12-28T13:00:00.000Z" title="发表于 2025-12-28 21:00:00">2025-12-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/24/sql%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/" title="sql靶场重做">sql靶场重做</a><time datetime="2025-12-23T16:00:00.000Z" title="发表于 2025-12-24 00:00:00">2025-12-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/" title="upload靶场重做">upload靶场重做</a><time datetime="2025-01-07T10:00:00.000Z" title="发表于 2025-01-07 18:00:00">2025-01-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/06/XXE/" title="XXE">XXE</a><time datetime="2025-01-06T14:00:00.000Z" title="发表于 2025-01-06 22:00:00">2025-01-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/05/%E5%A4%8D%E7%8E%B0CVE-2025-68664/" title="复现CVE-2025-68664">复现CVE-2025-68664</a><time datetime="2025-01-05T13:00:00.000Z" title="发表于 2025-01-05 21:00:00">2025-01-05</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xiexie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><script src="/js/tw_cn.js?v=5.5.3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
