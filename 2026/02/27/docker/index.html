@@ -1,0 +1,525 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>docker | Hexo</title><meta name="author" content="xiexie"><meta name="copyright" content="xiexie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Docker是什么在没有Docker之前 如果你要在电脑上跑一个别人写的 CTF Web 题目 要在自己电脑上装一堆符合的环境   Docker 就是一个极其轻量级的“虚拟机”替代方案 两个最核心的概念镜像 (Image) 它是一个只读的文件，里面打包好了操作系统基础、运行环境（比如 PHP）和题目代码容器 (Container) 容器是一个隔离的沙箱，题目就在这个沙箱里运行 基础操作 镜像">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker">
+<meta property="og:url" content="http://xiexie-qiuligao.github.io/2026/02/27/docker/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Docker是什么在没有Docker之前 如果你要在电脑上跑一个别人写的 CTF Web 题目 要在自己电脑上装一堆符合的环境   Docker 就是一个极其轻量级的“虚拟机”替代方案 两个最核心的概念镜像 (Image) 它是一个只读的文件，里面打包好了操作系统基础、运行环境（比如 PHP）和题目代码容器 (Container) 容器是一个隔离的沙箱，题目就在这个沙箱里运行 基础操作 镜像">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiexie-qiuligao.github.io/img/1.png">
+<meta property="article:published_time" content="2026-02-27T13:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-02T12:27:52.641Z">
+<meta property="article:author" content="xiexie">
+<meta property="article:tag" content="学习task">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiexie-qiuligao.github.io/img/1.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "docker",
+  "url": "http://xiexie-qiuligao.github.io/2026/02/27/docker/",
+  "image": "http://xiexie-qiuligao.github.io/img/1.png",
+  "datePublished": "2026-02-27T13:00:00.000Z",
+  "dateModified": "2026-03-02T12:27:52.641Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xiexie",
+      "url": "http://xiexie-qiuligao.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/1.png"><link rel="canonical" href="http://xiexie-qiuligao.github.io/2026/02/27/docker/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'docker',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">docker</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">docker</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-02-27T13:00:00.000Z" title="发表于 2026-02-27 21:00:00">2026-02-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-02T12:27:52.641Z" title="更新于 2026-03-02 20:27:52">2026-03-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;It has been&quot;,&quot;messageNext&quot;:&quot;days since the last update, the content of the article may be outdated.&quot;,&quot;postUpdate&quot;:&quot;2026-03-02 20:27:52&quot;}" hidden></div><h3 id="Docker是什么"><a href="#Docker是什么" class="headerlink" title="Docker是什么"></a>Docker是什么</h3><p>在没有Docker之前 如果你要在电脑上跑一个别人写的 CTF Web 题目 要在自己电脑上装一堆符合的环境   Docker 就是一个极其轻量级的“虚拟机”替代方案 两个最核心的概念<br><strong>镜像 (Image)</strong> 它是一个只读的文件，里面打包好了操作系统基础、运行环境（比如 PHP）和题目代码<br><strong>容器 (Container)</strong> 容器是一个隔离的沙箱，题目就在这个沙箱里运行</p>
+<h3 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h3><ol>
+<li>镜像</li>
+</ol>
+<ul>
+<li><p><strong><code>docker images</code></strong></p>
+<ul>
+<li><strong>作用</strong>：查看本地所有镜像（看看你的武器库里都有啥）。</li>
+</ul>
+</li>
+<li><p><strong><code>docker search &lt;关键词&gt;</code></strong></p>
+<ul>
+<li><strong>场景</strong>：你想找个现成的靶场，比如输入 <code>docker search sqli-labs</code>，可以直接在终端搜找别人做好的镜像。</li>
+</ul>
+</li>
+<li><p><strong><code>docker pull &lt;镜像名:标签&gt;</code></strong></p>
+<ul>
+<li><p><strong>作用</strong>：把云端的镜像拉到本地。如果不写标签（冒号后面的部分），默认拉取 <code>latest</code>（最新版）。</p>
+</li>
+<li><p><strong>示例</strong>：<code>docker pull ubuntu:20.04</code></p>
+</li>
+</ul>
+</li>
+<li><p><strong><code>docker rmi &lt;镜像ID或名字&gt;</code></strong></p>
+<ul>
+<li><p><strong>作用</strong>：删除镜像（Remove Image）。</p>
+</li>
+<li><p><strong>避坑</strong>：如果报错说镜像正在被使用，说明有基于它的容器（即使是停止状态的）存在。必须先删容器，再删镜像。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>容器</li>
+</ol>
+<ul>
+<li><p><strong><code>docker ps</code></strong></p>
+<ul>
+<li><strong>作用</strong>：查看<strong>正在运行</strong>的容器。这能帮你快速找到当前开了哪些端口。</li>
+</ul>
+</li>
+<li><p><strong><code>docker ps -a</code></strong></p>
+<ul>
+<li><strong>作用</strong>：查看<strong>所有</strong>容器（包括报错闪退的、已经停止的）。排错时非常有用。</li>
+</ul>
+</li>
+<li><p><strong><code>docker stop &lt;容器名/ID&gt;</code></strong> &#x2F; <strong><code>docker start &lt;容器名/ID&gt;</code></strong></p>
+<ul>
+<li><strong>作用</strong>：优雅地停止&#x2F;启动容器。</li>
+</ul>
+</li>
+<li><p><strong><code>docker rm &lt;容器名/ID&gt;</code></strong></p>
+<ul>
+<li><strong>作用</strong>：删除容器。如果容器还在跑，可以加 <code>-f</code> (force) 强制删除：<code>docker rm -f my_ctf_web</code>。</li>
+</ul>
+</li>
+<li><p><strong><code>docker logs -f &lt;容器名/ID&gt;</code></strong></p>
+<ul>
+<li><strong>场景</strong>：Web 服务报错误了用这个命令实时追踪容器的后台输出日志，<code>-f</code> 表示持续跟踪不退出</li>
+</ul>
+</li>
+<li><p><strong><code>docker exec -it &lt;容器名/ID&gt; /bin/bash</code></strong></p>
+<ul>
+<li><strong>作用</strong>：钻进运行中的容器里，获得一个交互式 Shell 进行调试</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>参数</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>英文全称</th>
+<th>说明</th>
+<th>实用场景&#x2F;示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-d</td>
+<td>Detach</td>
+<td>后台运行</td>
+<td>跑 Web 靶场必加，避免终端被卡住无法执行其他命令</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>Publish</td>
+<td>端口映射，格式：-p 宿主机端口:容器端口</td>
+<td>示例：-p 8080:80（将宿主机8080端口映射到容器80端口）</td>
+</tr>
+<tr>
+<td>–name</td>
+<td>Name</td>
+<td>为容器自定义命名</td>
+<td>示例：–name xiexie（避免系统生成随机难记的容器名）</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>Env</td>
+<td>设置容器内的环境变量</td>
+<td>示例：-e FLAG&#x3D;flag{xiexie}</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>Volume</td>
+<td>目录挂载，格式：-v &#x2F;本地代码目录:&#x2F;容器内部目录</td>
+<td>宿主机改代码容器内实时生效，无需反复重启容器</td>
+</tr>
+<tr>
+<td>–rm</td>
+<td>Remove</td>
+<td>阅后即焚，容器停止后自动销毁</td>
+<td>适合一次性测试，不残留容器文件、不占用磁盘空间</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4. 核心命令大全</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>docker run</td>
+<td>启动一个新的容器并运行命令</td>
+<td>docker run -d ubuntu</td>
+</tr>
+<tr>
+<td>docker ps</td>
+<td>列出当前正在运行的容器</td>
+<td>docker ps</td>
+</tr>
+<tr>
+<td>docker ps -a</td>
+<td>列出所有容器（包括已停止的容器）</td>
+<td>docker ps -a</td>
+</tr>
+<tr>
+<td>docker build</td>
+<td>使用Dockerfile构建镜像</td>
+<td>docker build -t my-image .</td>
+</tr>
+<tr>
+<td>docker images</td>
+<td>列出本地存储的所有镜像</td>
+<td>docker images</td>
+</tr>
+<tr>
+<td>docker pull</td>
+<td>从 Docker 仓库拉取镜像</td>
+<td>docker pull ubuntu</td>
+</tr>
+<tr>
+<td>docker push</td>
+<td>将镜像推送到 Docker 仓库</td>
+<td>docker push my-image</td>
+</tr>
+<tr>
+<td>docker exec</td>
+<td>在运行的容器中执行命令</td>
+<td>docker exec -it 23dfd567926a bash</td>
+</tr>
+<tr>
+<td>docker stop</td>
+<td>停止一个或多个容器</td>
+<td>docker stop container_name</td>
+</tr>
+<tr>
+<td>docker start</td>
+<td>启动已经停止的容器</td>
+<td>docker start container_name</td>
+</tr>
+<tr>
+<td>docker restart</td>
+<td>重启一个容器</td>
+<td>docker restart container_name</td>
+</tr>
+<tr>
+<td>docker rm</td>
+<td>删除一个或多个容器</td>
+<td>docker rm container_name</td>
+</tr>
+<tr>
+<td>docker rmi</td>
+<td>删除一个或多个镜像</td>
+<td>docker rmi my-image</td>
+</tr>
+<tr>
+<td>docker logs</td>
+<td>查看容器的日志</td>
+<td>docker logs container_name</td>
+</tr>
+<tr>
+<td>docker inspect</td>
+<td>获取容器或镜像的详细信息</td>
+<td>docker inspect container_name</td>
+</tr>
+<tr>
+<td>docker exec -it</td>
+<td>进入容器的交互式终端</td>
+<td>docker exec -it container_name &#x2F;bin&#x2F;bash</td>
+</tr>
+<tr>
+<td>docker network ls</td>
+<td>列出所有 Docker 网络</td>
+<td>docker network ls</td>
+</tr>
+<tr>
+<td>docker volume ls</td>
+<td>列出所有 Docker 卷</td>
+<td>docker volume ls</td>
+</tr>
+<tr>
+<td>docker-compose up</td>
+<td>启动多容器应用（从 docker-compose.yml 文件）</td>
+<td>docker-compose up</td>
+</tr>
+<tr>
+<td>docker-compose down</td>
+<td>停止并删除由 docker-compose 启动的容器、网络等</td>
+<td>docker-compose down</td>
+</tr>
+<tr>
+<td>docker info</td>
+<td>显示 Docker 系统的详细信息</td>
+<td>docker info</td>
+</tr>
+<tr>
+<td>docker version</td>
+<td>显示 Docker 客户端和守护进程的版本信息</td>
+<td>docker version</td>
+</tr>
+<tr>
+<td>docker stats</td>
+<td>显示容器的实时资源使用情况</td>
+<td>docker stats</td>
+</tr>
+<tr>
+<td>docker login</td>
+<td>登录 Docker 仓库</td>
+<td>docker login</td>
+</tr>
+<tr>
+<td>docker logout</td>
+<td>登出 Docker 仓库</td>
+<td>docker logout</td>
+</tr>
+</tbody></table>
+<h3 id="如何让科学上网生效-配置镜像源"><a href="#如何让科学上网生效-配置镜像源" class="headerlink" title="如何让科学上网生效 &#x2F; 配置镜像源"></a>如何让科学上网生效 &#x2F; 配置镜像源</h3><ol>
+<li>配置科学上网 这里略 走魔法代理即可</li>
+<li>配置国内镜像源 这里在Docker Engine里面修改一下 换成国内镜像源 这里因为买服务器给了一个比较稳定的源 （打脸了 这个其实也不太稳定 最后还是走代理了）</li>
+</ol>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><ol>
+<li>Dockerfile 是一个文本文件，包含了一系列用于构建 Docker 镜像的指令 Docker 引擎通过读取这些指令来自动化构建镜像</li>
+<li>Dockerfile常用指令</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FROM</td>
+<td>设置构建镜像时使用的基础镜像</td>
+</tr>
+<tr>
+<td>MAINTAINER</td>
+<td>镜像的创建者</td>
+</tr>
+<tr>
+<td>RUN</td>
+<td>构建镜像时用于执行后面跟着的命令行命令（在 docker build 时执行）</td>
+</tr>
+<tr>
+<td>CMD</td>
+<td>类似于 RUN 指令，启动容器时用于执行后面跟着的命令行命令（在 docker run 时执行）</td>
+</tr>
+<tr>
+<td>ENTRYPOINT</td>
+<td>启动容器时会将其后面的命令当作参数，结合CMD 指令的命令一起执行</td>
+</tr>
+<tr>
+<td>COPY</td>
+<td>构建镜像时复制文件或者目录到容器里指定路径</td>
+</tr>
+<tr>
+<td>ADD</td>
+<td>功能与COPY指令类似，不同点在执行 &lt;源文件&gt; 为 tar 压缩文件的话，压缩格式为 gzip, bzip2 以及 xz 的情况下，ADD 指令会自动复制并解压到 &lt;目标路径&gt;，在不解压的前提下，无法复制 tar 压缩文件（推荐使用 COPY指令）</td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>设置环境变量，定义了环境变量，那么在后续的指令中，就可以使用这个环境变量</td>
+</tr>
+<tr>
+<td>ARG</td>
+<td>构建参数，与 ENV 作用一致。不过作用域不一样。ARG 设置的环境变量仅对 Dockerfile 内有效，也就是说只有 docker build 的过程中有效，构建好的镜像内不存在此环境变量</td>
+</tr>
+<tr>
+<td>VOLUME</td>
+<td>定义匿名数据卷。在启动容器时忘记挂载数据卷，会自动挂载到匿名卷</td>
+</tr>
+<tr>
+<td>EXPOSE</td>
+<td>声明端口</td>
+</tr>
+<tr>
+<td>WORKDIR</td>
+<td>指定工作目录。用 WORKDIR 指定的工作目录，会在构建镜像的每一层中都存在。（WORKDIR 指定的工作目录，必须是提前创建好的）</td>
+</tr>
+<tr>
+<td>USER</td>
+<td>用于指定执行后续命令的用户和用户组，这边只是切换后续命令执行的用户（用户和用户组必须提前已经存在）</td>
+</tr>
+<tr>
+<td>LABEL</td>
+<td>用来给镜像添加一些元数据（metadata），以键值对的形式</td>
+</tr>
+<tr>
+<td>ONBUILD</td>
+<td>用于延迟构建命令的执行。简单的说，就是 Dockerfile 里用 ONBUILD 指定的命令，在本次构建镜像的过程中不会执行（假设镜像为 test-build）。当有新的 Dockerfile 使用了之前构建的镜像 FROM test-build ，这是执行新镜像的 Dockerfile 构建时候，会执行 test-build 的 Dockerfile 里的 ONBUILD 指定的命令</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>下面是自己编写的一个最简单的php后门题的Dockerfile</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM php:7.4-apache</span><br><span class="line">WORKDIR /var/www/html/</span><br><span class="line">COPY . .</span><br><span class="line">RUN echo &quot;flag&#123;you_are_a_docker_master&#125;&quot; &gt; /flag</span><br><span class="line">EXPOSE 80</span><br></pre></td></tr></table></figure>
+
+<h3 id="dockerignore"><a href="#dockerignore" class="headerlink" title=".dockerignore"></a>.dockerignore</h3><p>当我们在 Dockerfile 中执行 <code>COPY . /var/www/html/</code> 时，会把宿主机当前文件夹里的<strong>所有文件</strong>都塞进容器的 Web 目录 但我如果把自己的exp或者是什么源码之类的一起放上去 选手能直接访问到<br><strong>.dockerignore</strong>作用就在这里 在 <code>Dockerfile</code> 同级目录下创建 <code>.dockerignore</code> 文件 在里面编写好需要忽略的文件 例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># .dockerignore 示例（注释用 # 开头） </span><br><span class="line"># 忽略 node_modules 目录（整目录） </span><br><span class="line">node_modules/ </span><br><span class="line"># 忽略 logs 目录 </span><br><span class="line">logs/ </span><br><span class="line"># 忽略 .git 版本控制目录 </span><br><span class="line">.git/ </span><br><span class="line"># 忽略单个文件 </span><br><span class="line">.env </span><br><span class="line">temp.txt </span><br><span class="line"># 忽略所有 .log 后缀的文件 </span><br><span class="line">*.log </span><br><span class="line"># 忽略所有以 temp 开头的文件/目录 </span><br><span class="line">temp* </span><br><span class="line"># 例外：如果想忽略所有 .txt 但保留 important.txt </span><br><span class="line">*.txt </span><br><span class="line">!important.txt</span><br></pre></td></tr></table></figure>
+<p>这里还可以用到匹配 但是出题貌似用的少 现在能力还做不了那么复杂的题</p>
+<h3 id="docker-compose-yaml"><a href="#docker-compose-yaml" class="headerlink" title="docker-compose.yaml"></a>docker-compose.yaml</h3><p>Dockerfile只可以用来构建单个镜像，在docker-compose.yml文件中，可以定义多个服务，每个服务可以包含一系列配置选项，例如镜像名称、容器端口、环境变量等。<br>比如在一道题目里面 有前端 后端 加上一个服务之类的 需要手动配置它们相互通信的虚拟网络 还需要run好多次 如果配置文件写好之后 只需要 <code>docker compose up -d</code> 即可全部部署好<br>例如一个最简单的<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/91.png"><br>builid构建镜像<br>ports去映射<br>假设有服务的那种 就比如是sql 文件结构如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">├── docker-compose.yaml</span><br><span class="line">├── web/</span><br><span class="line">│   ├── Dockerfile</span><br><span class="line">│   └── index.php</span><br><span class="line">└── db/</span><br><span class="line">    └── init.sql</span><br></pre></td></tr></table></figure>
+<p>文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">services:</span><br><span class="line">  # 服务 1：前端 Web</span><br><span class="line">  frontend:</span><br><span class="line">    # 注意！这里的 context 不是 . 了，而是 ./web，因为 Dockerfile 在 web 文件夹里</span><br><span class="line">    build: </span><br><span class="line">      context: ./web</span><br><span class="line">      dockerfile: Dockerfile</span><br><span class="line">    container_name: sqli_web</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:80&quot;</span><br><span class="line">    # 【重点】：依赖关系。保证数据库先启动，Web 后启动，防止连接失败</span><br><span class="line">    depends_on:</span><br><span class="line">      - backend_db</span><br><span class="line"></span><br><span class="line">  # 服务 2：后端 MySQL</span><br><span class="line">  backend_db:</span><br><span class="line">    # 数据库不需要我们自己写 Dockerfile 现场 build，直接用官方做好的镜像！</span><br><span class="line">    image: mysql:5.7</span><br><span class="line">    container_name: sqli_db</span><br><span class="line">    # 环境变量：官方 MySQL 镜像允许我们通过环境变量直接设置密码和库名</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: &quot;toor&quot;</span><br><span class="line">      MYSQL_DATABASE: &quot;ctf_db&quot;</span><br><span class="line">    # 端口映射：这里不写 ports</span><br><span class="line">    因为只有 frontend 容器需要连它。我们在宿主机上不需要连它。</span><br><span class="line">    # Compose 默认会让 frontend 和 backend_db 在同一个局域网内，前端只需连接 &quot;backend_db:3306&quot; 即可。</span><br></pre></td></tr></table></figure>
+
+<h3 id="记第一次自己出题"><a href="#记第一次自己出题" class="headerlink" title="记第一次自己出题"></a>记第一次自己出题</h3><p>出的题和寒假学习到的一个知识点相关 结合了sqlite的ATTTACH跨库查询 堆叠注入<br>目录如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sqlite/</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── docker-compose.yaml</span><br><span class="line">└── src/</span><br><span class="line">    ├── index.php    </span><br><span class="line">    └── update.php  </span><br></pre></td></tr></table></figure>
+<ol>
+<li>对dockerfile的要求 run一个sqlite 创目录 然后run两个数据库 一个是正常业务 一个是flag 对正常业务有读写 对flag数据库设权为444 还有就是Web 目录和 Flag 目录不可写 防止直接加上马RCE了</li>
+<li>对前端 这里比较重要的是ai优化了非预期解 输出都经过 <code>htmlspecialchars()</code> 净化</li>
+<li>对后端核心漏洞也就是直接拼接字符串 但是需要此库无任何有价值数据 需要跨库查询<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/images/92.png"><br>自己打打啦 具体文件就不放了</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://xiexie-qiuligao.github.io">xiexie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://xiexie-qiuligao.github.io/2026/02/27/docker/">http://xiexie-qiuligao.github.io/2026/02/27/docker/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://xiexie-qiuligao.github.io" target="_blank">Hexo</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0task/">学习task</a></div><div class="post-share"><div class="social-share" data-image="/img/1.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/01/Hgamectf/" title="Hgamectf"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Hgamectf</div></div><div class="info-2"><div class="info-item-1"> web 魔法书根据提示 抓包改阅读时间 得到弹窗 密码 Classic最后一行密文VUHHX{Tti Julxmzooz sm zhq Rlc azh ane Apk}然后明文VIDAR  123456计算偏移量：- V -&gt; V: 偏移 0 (A)- U -&gt; I: 偏移 12 (M) (U=20, I=8, 20-12=8)- H -&gt; D: 偏移 4 (E) (H=7, D=3, 7-4=3)- H -&gt; A: 偏移 7 (H) (H=7, A=0, 7-0=7)- X -&gt; R: 偏移 6 (G) (X=23, R=17, 23-6=17)  密文...</div></div></div></a><a class="pagination-related" href="/2026/02/09/sql/" title="sql"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">sql</div></div><div class="info-2"><div class="info-item-1">  搭完了个人博客 做ivory学长下发的任务 重新做sql靶场 加上补充知识点 sql是最开始学的 刚开始学的时候就只是问ai 基本语法都不是很了解就在写 这里相当于重新开始吧 基础语法也就是最基础的技巧吧  order by ORDER BY测列数是SQL 注入中最基础的技巧   核心原理ORDER BY的语法支持两种排序方式：   按列名 &#x2F; 别名排序（如ORDER BY username）； 按结果集的列索引排序（如ORDER BY 1表示按结果集第 1 列排序，ORDER BY 2按第 2 列，以此类推）。 如果n ≤ 结果集的列数：语句执行正常（无报错）； 如果n ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/01/30/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-30</div><div class="info-item-2">反序列化</div></div><div class="info-2"><div class="info-item-1">一般的反序列化入口    方法名 触发时机 &#x2F; 定义 触发方式极简示例    __construct 创建对象时初始化 new User();   __destruct 销毁对象时 (如脚本结束) $obj = null; 或 脚本执行完毕   __sleep 序列化前 serialize($obj);   __wakeup 反序列化后 unserialize($str);   __serialize 序列化时 (PHP 7.4+) serialize($obj);   __unserialize 反序列化时 (PHP 7.4+) unserialize($str);   __...</div></div></div></a><a class="pagination-related" href="/2026/02/09/sql/" title="sql"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-09</div><div class="info-item-2">sql</div></div><div class="info-2"><div class="info-item-1">  搭完了个人博客 做ivory学长下发的任务 重新做sql靶场 加上补充知识点 sql是最开始学的 刚开始学的时候就只是问ai 基本语法都不是很了解就在写 这里相当于重新开始吧 基础语法也就是最基础的技巧吧  order by ORDER BY测列数是SQL 注入中最基础的技巧   核心原理ORDER BY的语法支持两种排序方式：   按列名 &#x2F; 别名排序（如ORDER BY username）； 按结果集的列索引排序（如ORDER BY 1表示按结果集第 1 列排序，ORDER BY 2按第 2 列，以此类推）。 如果n ≤ 结果集的列数：语句执行正常（无报错）； 如果n ...</div></div></div></a><a class="pagination-related" href="/2026/01/27/LFI/" title="LFI"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-27</div><div class="info-item-2">LFI</div></div><div class="info-2"><div class="info-item-1"> 先写靶场  直接用get访问即可，这里对文件没有任何限制。 用upload那里学到的00截断来做，如果你要传php文件的话，可以不用管，因为他是加上后缀.php（其实我这里没有看懂这个防御方式），如果要穿其他文件的话，就在末尾用00截断 从后往前数四个，如果是.php就直接错，不是的话就直接访问，绕过的方式就很多了，可以大写绕过。也可以加点绕过。 ·addslashes()函数，addslashes()是 PHP 内置的字符串转义函数，核心作用是：在字符串中的 ** 单引号（&#39;）、双引号（&quot;）、反斜线（\）、NUL（NULL 空字符）** 这四类 “预定义特殊字符” ...</div></div></div></a><a class="pagination-related" href="/2025/01/07/upload%E9%9D%B6%E5%9C%BA%E9%87%8D%E5%81%9A/" title="upload靶场重做"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-07</div><div class="info-item-2">upload靶场重做</div></div><div class="info-2"><div class="info-item-1"> 前端验证 可以禁用js 或者是先改后缀 然后抓包改 检查content-type 抓包改 在apache文件里面看哪些后缀会被作为php文件解析 php php3 phtml .htaccess 是Apache 服务器专属的 “分布式配置文件”（Nginx&#x2F; IIS 服务器不支持) 作用是 “局部配置”：不用修改 Apache 的主配置文件，只需把.htaccess 放在某个目录下，就能对这个目录及所有子目录生效；修改后不用重启 Apache 服务器，保存就生效那么这里的攻击就是先上传恶意的.htaccess 文件修改目录解析规则，再上传伪装成普通文件的恶意脚本，让服务器把这...</div></div></div></a><a class="pagination-related" href="/2026/03/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-02</div><div class="info-item-2">计算机网络</div></div><div class="info-2"><div class="info-item-1">网络世界的坐标系 MAC地址与IP地址一、 核心架构：为什么需要物理与逻辑两套寻址体系？在网络工程架构中，MAC 地址与 IP 地址的共存并非冗余，而是为了解决网络规模扩展时的寻址效率与物理硬件解耦问题。  MAC 地址（物理寻址，平面架构）：工作在数据链路层。MAC 地址是扁平化的（Flat Addressing），它仅唯一标识网络节点的硬件接口（网卡 NIC），不包含任何拓扑位置信息。如果互联网仅依赖 MAC 地址进行路由，全球所有的路由器必须维护一张包含数十亿条目的转发表，这在内存寻址和路由收敛上是完全不可行的。  IP 地址（逻辑寻址，层次化架构）：工作在网络层。IP 地址是层次...</div></div></div></a><a class="pagination-related" href="/2025/12/28/xss%E5%AD%A6%E4%B9%A0%E4%BB%A5%E5%8F%8A%E9%9D%B6%E5%9C%BA/" title="xss学习以及靶场"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-28</div><div class="info-item-2">xss学习以及靶场</div></div><div class="info-2"><div class="info-item-1"> 什么是xss  跨站脚本攻击 原理是操纵存在漏洞的网站，使其向用户返回恶意 JavaScript 代码。当恶意代码在受害者的浏览器中执行时，攻击者就能完全控制用户与应用程序的交互。  XSS概念验证  通过注入一段有效载荷来验证大多数类型的 XSS 漏洞，该有效载荷会导致您的浏览器执行一些任意 JavaScript 代码。相当于就是快速检测是否有xss漏洞 。在大多数靶场里面可以快速用函数alert() 看看会不会出现弹窗 后面alert()函数在有些无法使用了 用的是print()  XSS攻击类型  XSS攻击主要分为三种类型，分别是：  反射型 XSS，其中恶意脚本来自当前的 H...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiexie</div><div class="author-info-description">我的个人学习博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xiexie-qiuligao"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">Docker是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">基础操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AE%A9%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E7%94%9F%E6%95%88-%E9%85%8D%E7%BD%AE%E9%95%9C%E5%83%8F%E6%BA%90"><span class="toc-number">3.</span> <span class="toc-text">如何让科学上网生效 &#x2F; 配置镜像源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockerfile"><span class="toc-number">4.</span> <span class="toc-text">Dockerfile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dockerignore"><span class="toc-number">5.</span> <span class="toc-text">.dockerignore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-compose-yaml"><span class="toc-number">6.</span> <span class="toc-text">docker-compose.yaml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%B0%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%87%AA%E5%B7%B1%E5%87%BA%E9%A2%98"><span class="toc-number">7.</span> <span class="toc-text">记第一次自己出题</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络">计算机网络</a><time datetime="2026-03-02T12:00:00.000Z" title="发表于 2026-03-02 20:00:00">2026-03-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/01/Hgamectf/" title="Hgamectf">Hgamectf</a><time datetime="2026-03-01T13:00:00.000Z" title="发表于 2026-03-01 21:00:00">2026-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/27/docker/" title="docker">docker</a><time datetime="2026-02-27T13:00:00.000Z" title="发表于 2026-02-27 21:00:00">2026-02-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/09/sql/" title="sql">sql</a><time datetime="2026-02-08T16:00:00.000Z" title="发表于 2026-02-09 00:00:00">2026-02-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/01/HTTP%20%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/" title="HTTP 请求走私">HTTP 请求走私</a><time datetime="2026-02-01T13:00:00.000Z" title="发表于 2026-02-01 21:00:00">2026-02-01</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xiexie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><script src="/js/tw_cn.js?v=5.5.3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.7/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
